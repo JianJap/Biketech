@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CicloTaller Pro | SGIP-BikeTech — Prototipo Funcional Servicio Técnico de Bicicletas</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-logo">🚲</div>
+        <div>
+          <span class="brand-title">CicloTaller Pro</span>
+          <span class="brand-subtitle">SGIP-BikeTech v1.0 • Taller & POS</span>
+        </div>
+      </div>
+
+      <div class="nav-section-label">Módulos por Historia de Usuario</div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <button class="nav-btn active" data-screen="hu01" onclick="switchScreen('hu01')">
+            <span class="nav-btn-left"><span class="nav-icon">🔐</span> Seguridad y Roles RBAC</span>
+            <span class="hu-pill">HU-01</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-btn" data-screen="hu02" onclick="switchScreen('hu02')">
+            <span class="nav-btn-left"><span class="nav-icon">📋</span> Recepción y Órdenes OST</span>
+            <span class="hu-pill">HU-02</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-btn" data-screen="hu03" onclick="switchScreen('hu03')">
+            <span class="nav-btn-left"><span class="nav-icon">🔧</span> Flujo Taller y Repuestos</span>
+            <span class="hu-pill">HU-03</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-btn" data-screen="hu04" onclick="switchScreen('hu04')">
+            <span class="nav-btn-left"><span class="nav-icon">⚙️</span> Catálogo y Kardex ACID</span>
+            <span class="hu-pill">HU-04</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-btn" data-screen="hu05" onclick="switchScreen('hu05')">
+            <span class="nav-btn-left"><span class="nav-icon">🚚</span> Proveedores y Compras</span>
+            <span class="hu-pill">HU-05</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-btn" data-screen="hu06" onclick="switchScreen('hu06')">
+            <span class="nav-btn-left"><span class="nav-icon">💳</span> POS, Impuestos y Caja</span>
+            <span class="hu-pill">HU-06</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-btn" data-screen="hu07" onclick="switchScreen('hu07')">
+            <span class="nav-btn-left"><span class="nav-icon">📊</span> Dashboard y Reportes</span>
+            <span class="hu-pill">HU-07</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="sla-indicator">
+          <span class="pulse-dot"></span>
+          <span>SLA p95: 38 ms (&lt; 400 ms)</span>
+        </div>
+        <div>VPS 4 vCPU / 8GB RAM • Pool 50 Usuarios</div>
+        <div style="margin-top:2px;color:#64748b;">Andrés Darío Rodríguez Dacuara</div>
+      </div>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <div class="main-area">
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="page-title" id="topbar-title">Gestión de Acceso, Seguridad JWT y Roles (RBAC)</h1>
+          <span class="hu-active-badge" id="topbar-badge">HU-01 • Seguridad y Auditoría</span>
+        </div>
+        <div class="topbar-right">
+          <div class="jwt-badge">
+            <span>🛡️</span>
+            <span id="jwt-token-label">Sesión Activa: ADMIN (JWT-HS256-98F2A...4E1B)</span>
+          </div>
+          <div class="role-switcher-wrap">
+            <span class="role-switcher-label">Simular Rol RBAC:</span>
+            <select id="role-switcher" class="role-select" onchange="changeRole(this.value)">
+              <option value="ADMIN">Administrador General</option>
+              <option value="MECANICO">Técnico Mecánico Líder</option>
+              <option value="CAJERO">Recepcionista / Cajero POS</option>
+              <option value="ALMACEN">Almacenista de Repuestos</option>
+            </select>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT -->
+      <main class="content-wrap">
+
+        <!-- ================================================================ -->
+        <!-- VIEW HU-01: AUTENTICACIÓN Y CONTROL DE ACCESO POR ROLES (RBAC)   -->
+        <!-- ================================================================ -->
+        <section id="view-hu01" class="view-section active">
+          <div class="hu-criteria-banner">
+            <div class="hu-banner-text">
+              <h3>HU-01: Autenticación Segura con Tokens JWT y Autorización Granular por Roles (RBAC)</h3>
+              <p>Control de acceso diferenciado para el personal del taller de bicicletas (Administrador, Técnico Mecánico, Recepcionista/Cajero y Almacenista) con bitácora inmutable de auditoría y protección OWASP.</p>
+            </div>
+            <div class="hu-banner-pills">
+              <span class="ca-pill">✓ CA-01.1 Sesión JWT Activa</span>
+              <span class="ca-pill">✓ CA-01.2 Matriz RBAC Granular</span>
+              <span class="ca-pill">✓ CA-01.3 Bitácora de Auditoría</span>
+            </div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Rol Activo en Sesión</span><span class="kpi-icon" style="background:#eff6ff;color:#2563eb;">👤</span></div>
+              <div class="kpi-value" style="font-size:15px;" id="hu01-active-role">Administrador General (Andrés Darío Rodríguez)</div>
+              <div class="kpi-sub">Autenticación OAuth2 / JWT HS256 Verificada</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Perfiles Operativos del Taller</span><span class="kpi-icon" style="background:#ecfdf5;color:#059669;">🔑</span></div>
+              <div class="kpi-value">4 Roles RBAC</div>
+              <div class="kpi-sub">Admin • Mecánico • Cajero POS • Almacenista</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Seguridad &amp; Integridad</span><span class="kpi-icon" style="background:#f5f3ff;color:#7c3aed;">🛡️</span></div>
+              <div class="kpi-value">0 Vulnerabilidades</div>
+              <div class="kpi-sub">Cumplimiento OWASP Top 10 • Bloqueo Fila ACID</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Intentos No Autorizados</span><span class="kpi-icon" style="background:#fff1f2;color:#e11d48;">🚫</span></div>
+              <div class="kpi-value">1 Bloqueado (403)</div>
+              <div class="kpi-sub">Registrado en Bitácora de Seguridad</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🔐 Matriz de Permisos por Rol Operativo en el Taller de Bicicletas (CA-01.1, CA-01.2)</div>
+              <span class="badge badge-success">Política RBAC Activa en API REST</span>
+            </div>
+            <div class="card-body table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Módulo / Operación del Sistema</th>
+                    <th>Administrador</th>
+                    <th>Técnico Mecánico</th>
+                    <th>Cajero / Recepcionista</th>
+                    <th>Almacenista</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Recepción de Bicicletas y Apertura de Orden (OST)</strong></td>
+                    <td><span class="badge badge-success">✓ Permitido</span></td>
+                    <td><span class="badge badge-success">✓ Permitido</span></td>
+                    <td><span class="badge badge-success">✓ Permitido</span></td>
+                    <td><span class="badge badge-neutral">Solo Lectura</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Diagnóstico Técnico, Cambio de Estado en Taller e Imputación de Repuestos</strong></td>
+                    <td><span class="badge badge-success">✓ Permitido</span></td>
+                    <td><span class="badge badge-success">✓ Permitido</span></td>
+                    <td><span class="badge badge-neutral">Solo Lectura</span></td>
+                    <td><span class="badge badge-neutral">Solo Lectura</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Edición de Costos Unitarios y Ajustes de Inventario Físico (Kardex)</strong></td>
+                    <td><span class="badge badge-success">✓ Permitido</span></td>
+                    <td><span class="badge badge-danger">✗ Bloqueado (403)</span></td>
+                    <td><span class="badge badge-danger">✗ Bloqueado (403)</span></td>
+                    <td><span class="badge badge-success">✓ Permitido</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Emisión y Recepción de Órdenes de Compra a Distribuidores de Ciclismo</strong></td>
+                    <td><span class="badge badge-success">✓ Permitido</span></td>
+                    <td><span class="badge badge-danger">✗ Bloqueado (403)</span></td>
+                    <td><span class="badge badge-danger">✗ Bloqueado (403)</span></td>
+                    <td><span class="badge badge-success">✓ Permitido</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Liquidación POS, Cálculo de Impuesto Interno (IVA 19%) y Registro de Pagos</strong></td>
+                    <td><span class="badge badge-success">✓ Permitido</span></td>
+                    <td><span class="badge badge-danger">✗ Bloqueado (403)</span></td>
+                    <td><span class="badge badge-success">✓ Permitido</span></td>
+                    <td><span class="badge badge-danger">✗ Bloqueado (403)</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📜 Bitácora Inmutable de Auditoría de Accesos y Transacciones (CA-01.3)</div>
+              <span class="badge badge-info">Trazabilidad Completa</span>
+            </div>
+            <div class="card-body table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID Evento</th>
+                    <th>Fecha y Hora</th>
+                    <th>Usuario / Rol</th>
+                    <th>Módulo</th>
+                    <th>Detalle de la Operación</th>
+                    <th>Resultado</th>
+                  </tr>
+                </thead>
+                <tbody id="hu01-audit-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- VIEW HU-02: RECEPCIÓN DE BICICLETAS Y APERTURA DE ÓRDENES (OST)  -->
+        <!-- ================================================================ -->
+        <section id="view-hu02" class="view-section">
+          <div class="hu-criteria-banner">
+            <div class="hu-banner-text">
+              <h3>HU-02: Recepción Técnica de Bicicletas y Apertura de Orden de Servicio Técnico (OST)</h3>
+              <p>Registro estructurado del propietario, ficha técnica de la bicicleta (marca, tipo MTB/Ruta/Gravel, rin, número de serie del marco), diagnóstico de ingreso y asignación de mecánico responsable.</p>
+            </div>
+            <div class="hu-banner-pills">
+              <span class="ca-pill">✓ CA-02.1 Validación Ficha Bicicleta y Serial</span>
+              <span class="ca-pill">✓ CA-02.2 Consecutivo Automático OST</span>
+              <span class="ca-pill">✓ CA-02.3 Búsqueda en Tiempo Real (&lt;400ms)</span>
+            </div>
+          </div>
+
+          <div class="grid-sidebar-form">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">🚲 Nueva Orden de Servicio (OST)</div>
+                <span class="badge badge-info">Ingreso a Taller</span>
+              </div>
+              <div class="card-body">
+                <form onsubmit="createServiceOrder(event)">
+                  <div class="form-grid">
+                    <div class="form-group full">
+                      <label class="form-label">Nombre Completo del Propietario *</label>
+                      <input type="text" id="ost-client" class="form-control" value="Alejandro Gómez Salazar" required>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Teléfono / WhatsApp *</label>
+                      <input type="text" id="ost-phone" class="form-control" value="314-789-5520" required>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Serial del Marco *</label>
+                      <input type="text" id="ost-serial" class="form-control" value="TRK8849201M" required>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Marca y Modelo Bicicleta *</label>
+                      <input type="text" id="ost-bike" class="form-control" value="Trek Procaliber 9.5 Carbon" required>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Modalidad / Rin *</label>
+                      <select id="ost-type" class="form-control">
+                        <option value="MTB (Rin 29&quot;)">MTB (Rin 29")</option>
+                        <option value="Ruta (Rin 700c)">Ruta (Rin 700c)</option>
+                        <option value="Gravel (Rin 700c)">Gravel (Rin 700c)</option>
+                        <option value="Urbana / E-Bike">Urbana / E-Bike</option>
+                      </select>
+                    </div>
+                    <div class="form-group full">
+                      <label class="form-label">Tipo de Servicio Técnico Solicitado *</label>
+                      <select id="ost-service" class="form-control">
+                        <option value="Mantenimiento General Completo (Desarme + Ultrasonido)">Mantenimiento General Completo (Desarme + Ultrasonido)</option>
+                        <option value="Mantenimiento Preventivo y Ajuste de Cambios">Mantenimiento Preventivo y Ajuste de Cambios</option>
+                        <option value="Purgado de Frenos Hidráulicos + Cambio Pastillas">Purgado de Frenos Hidráulicos + Cambio Pastillas</option>
+                        <option value="Mantenimiento de Suspensión Delantera (50 Horas)">Mantenimiento de Suspensión Delantera (50 Horas)</option>
+                        <option value="Centrado de Rines y Conversión Tubeless">Centrado de Rines y Conversión Tubeless</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Técnico Mecánico Asignado</label>
+                      <select id="ost-mechanic" class="form-control">
+                        <option value="Carlos Andrés Mejía">Carlos Andrés Mejía</option>
+                        <option value="Diego Fernando Soto">Diego Fernando Soto</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Mano de Obra Estimada ($)</label>
+                      <input type="number" id="ost-labor" class="form-control" value="85000" required>
+                    </div>
+                    <div class="form-group full">
+                      <label class="form-label">Diagnóstico Inicial y Estado Físico de Recepción *</label>
+                      <textarea id="ost-diag" class="form-control" rows="2" required>Bicicleta ingresa con ruido en eje centro PressFit, roce en rotor delantero de 180mm y cadena con desgaste al 0.75%.</textarea>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;">➕ Registrar Ingreso y Generar Código OST</button>
+                </form>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">📋 Órdenes de Servicio Técnico Activas e Históricas (CA-02.2, CA-02.3)</div>
+                <input type="text" id="hu02-search" class="form-control" style="width:250px;" placeholder="🔍 Filtrar por OST, cliente, serial, marca..." oninput="renderHU02()">
+              </div>
+              <div class="card-body table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Código OST</th>
+                      <th>Cliente / Contacto</th>
+                      <th>Bicicleta y Serial del Marco</th>
+                      <th>Servicio Solicitado</th>
+                      <th>Mecánico</th>
+                      <th>Estado Actual</th>
+                      <th>Total Est.</th>
+                    </tr>
+                  </thead>
+                  <tbody id="hu02-ost-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- VIEW HU-03: FLUJO DE TALLER Y ASIGNACIÓN DE REPUESTOS            -->
+        <!-- ================================================================ -->
+        <section id="view-hu03" class="view-section">
+          <div class="hu-criteria-banner">
+            <div class="hu-banner-text">
+              <h3>HU-03: Gestión de Estado del Taller y Asignación Transaccional de Repuestos por Orden</h3>
+              <p>Control visual Kanban de las bicicletas en servicio técnico, lista de chequeo mecánico e imputación de repuestos con validación de existencias y bloqueo ACID a nivel de fila para evitar sobreventa.</p>
+            </div>
+            <div class="hu-banner-pills">
+              <span class="ca-pill">✓ CA-03.1 Tablero Kanban y Checklist Técnico</span>
+              <span class="ca-pill">✓ CA-03.2 Bloqueo por Stock Insuficiente</span>
+              <span class="ca-pill">✓ CA-03.3 Descuento Atómico en Kardex</span>
+            </div>
+          </div>
+
+          <div class="kanban-board">
+            <div class="kanban-col">
+              <div class="kanban-col-header"><span>📥 1. Recibida</span><span class="badge badge-neutral" id="kanban-count-0">0</span></div>
+              <div id="kanban-col-0"></div>
+            </div>
+            <div class="kanban-col">
+              <div class="kanban-col-header"><span>🔍 2. En Diagnóstico</span><span class="badge badge-purple" id="kanban-count-1">0</span></div>
+              <div id="kanban-col-1"></div>
+            </div>
+            <div class="kanban-col">
+              <div class="kanban-col-header"><span>🔧 3. En Reparación</span><span class="badge badge-warning" id="kanban-count-2">0</span></div>
+              <div id="kanban-col-2"></div>
+            </div>
+            <div class="kanban-col">
+              <div class="kanban-col-header"><span>✅ 4. Lista para Entrega</span><span class="badge badge-success" id="kanban-count-3">0</span></div>
+              <div id="kanban-col-3"></div>
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">🛠️ Ficha de Trabajo Mecánico y Repuestos Instalados (CA-03.1, CA-03.3)</div>
+                <span class="badge badge-success">Sincronizado en Tiempo Real</span>
+              </div>
+              <div class="card-body" id="hu03-ost-detail"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">⚙️ Imputar Repuesto / Insumo de Bodega a la Bicicleta (CA-03.2)</div>
+                <span class="badge badge-info">Row-Level Lock ACID</span>
+              </div>
+              <div class="card-body">
+                <p style="font-size:12px;color:#475569;margin-bottom:10px;">
+                  Al asignar un repuesto a la orden de servicio activa, el sistema valida la disponibilidad en tiempo real, ejecuta una transacción atómica (ACID) descontando las unidades del inventario y genera el movimiento inmutable en el Kardex.
+                </p>
+                <form onsubmit="assignPartToOst(event)">
+                  <div class="form-group">
+                    <label class="form-label">Seleccionar Repuesto o Insumo del Catálogo de Ciclismo</label>
+                    <select id="hu03-part-select" class="form-control"></select>
+                  </div>
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label class="form-label">Cantidad a Instalar</label>
+                      <input type="number" id="hu03-part-qty" class="form-control" value="1" min="1" max="20">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Control de Concurrencia</label>
+                      <input type="text" class="form-control" value="Bloqueo Pesimista SELECT FOR UPDATE" readonly style="background:#f8fafc;color:#059669;font-weight:700;">
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-emerald" style="width:100%;margin-top:4px;">🔧 Instalar Repuesto en Bicicleta y Descontar Stock</button>
+                </form>
+
+                <div style="margin-top:14px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 12px;font-size:11.5px;color:#92400e;">
+                  <strong>🔒 Verificación de Condición de Carrera (Riesgo R01 Mitigado):</strong> Si dos técnicos intentan consumir simultáneamente la última unidad disponible de un mismo SKU (ej. <code>SKU-TR-002 Pacha Shimano Deore 12v</code>), el motor aplica aislamiento transaccional y notifica en pantalla si el stock resulta insuficiente.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- VIEW HU-04: CATÁLOGO DE REPUESTOS E INVENTARIO + KARDEX          -->
+        <!-- ================================================================ -->
+        <section id="view-hu04" class="view-section">
+          <div class="hu-criteria-banner">
+            <div class="hu-banner-text">
+              <h3>HU-04: Catálogo Especializado de Repuestos de Ciclismo, Control de Stock y Kardex Inmutable</h3>
+              <p>Administración de referencias por SKU, categoría técnica, costo promedio ponderado, alertas preventivas de stock mínimo y trazabilidad de entradas, salidas de taller y ajustes por inventario físico.</p>
+            </div>
+            <div class="hu-banner-pills">
+              <span class="ca-pill">✓ CA-04.1 Catálogo por SKU y Costo Promedio</span>
+              <span class="ca-pill">✓ CA-04.2 Alertas de Punto de Reorden</span>
+              <span class="ca-pill">✓ CA-04.3 Historial Kardex Inmutable</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📦 Catálogo Maestro de Repuestos, Componentes y Lubricantes (CA-04.1, CA-04.2)</div>
+              <div style="display:flex;gap:8px;">
+                <span class="badge badge-danger">3 SKUs en Nivel Crítico</span>
+                <span class="badge badge-warning">1 SKU en Stock Mínimo</span>
+                <span class="badge badge-success">6 SKUs en Nivel Óptimo</span>
+              </div>
+            </div>
+            <div class="card-body table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Código SKU</th>
+                    <th>Descripción del Repuesto / Ubicación</th>
+                    <th>Categoría Ciclismo</th>
+                    <th>Costo Prom. Ponderado</th>
+                    <th>Precio Venta</th>
+                    <th>Existencias / Mín.</th>
+                    <th>Estado de Stock</th>
+                  </tr>
+                </thead>
+                <tbody id="hu04-inv-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📑 Kardex Inmutable de Movimientos de Inventario (CA-04.3)</div>
+              <span class="badge badge-purple">Integridad Referencial ACID</span>
+            </div>
+            <div class="card-body table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID Kardex</th>
+                    <th>Fecha / Hora</th>
+                    <th>SKU y Referencia</th>
+                    <th>Tipo Movimiento</th>
+                    <th>Doc. Origen</th>
+                    <th>Saldo Ant.</th>
+                    <th>Mov.</th>
+                    <th>Saldo Nuevo</th>
+                    <th>Costo Unit.</th>
+                    <th>Responsable</th>
+                  </tr>
+                </thead>
+                <tbody id="hu04-kardex-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- VIEW HU-05: PROVEEDORES Y ÓRDENES DE COMPRA                      -->
+        <!-- ================================================================ -->
+        <section id="view-hu05" class="view-section">
+          <div class="hu-criteria-banner">
+            <div class="hu-banner-text">
+              <h3>HU-05: Gestión de Proveedores de Ciclismo y Órdenes de Compra para Reabastecimiento</h3>
+              <p>Emisión planificada de órdenes de compra a distribuidores autorizados (Shimano, Maxxis, RockShox, Continental) a partir de alertas de stock mínimo y recepción automatizada en bodega.</p>
+            </div>
+            <div class="hu-banner-pills">
+              <span class="ca-pill">✓ CA-05.1 Emisión OC Multi-SKU</span>
+              <span class="ca-pill">✓ CA-05.2 Seguimiento de Estados OC</span>
+              <span class="ca-pill">✓ CA-05.3 Recepción con Carga Automática al Kardex</span>
+            </div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Proveedores Homologados</span><span class="kpi-icon" style="background:#eff6ff;color:#2563eb;">🏢</span></div>
+              <div class="kpi-value">4 Distribuidores</div>
+              <div class="kpi-sub">HA Bicicletas • Maxxis Latam • Disandina</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Órdenes en Tránsito</span><span class="kpi-icon" style="background:#fffbeb;color:#d97706;">🚚</span></div>
+              <div class="kpi-value">1 Orden ($1.83M)</div>
+              <div class="kpi-sub">OC-2026-0042 • Reabastecimiento Shimano</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Órdenes Recibidas (Mes)</span><span class="kpi-icon" style="background:#ecfdf5;color:#059669;">📥</span></div>
+              <div class="kpi-value">1 Orden ($1.07M)</div>
+              <div class="kpi-sub">OC-2026-0041 • Ingresada a Kardex</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">SKUs Sugeridos Compra</span><span class="kpi-icon" style="background:#fff1f2;color:#e11d48;">⚡</span></div>
+              <div class="kpi-value">4 Referencias</div>
+              <div class="kpi-sub">Pacha 12v, Pastillas B05S, Maxxis Ikon, Retenes</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🚚 Control de Órdenes de Compra a Proveedores y Recepción en Almacén (CA-05.1, CA-05.2, CA-05.3)</div>
+              <span class="badge badge-info">Abastecimiento Preventivo</span>
+            </div>
+            <div class="card-body table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Código OC / Fecha</th>
+                    <th>Proveedor / Distribuidor Autorizado</th>
+                    <th>Detalle de Repuestos Solicitados</th>
+                    <th>Valor Total OC</th>
+                    <th>Estado de la Orden</th>
+                    <th>Acción de Almacén</th>
+                  </tr>
+                </thead>
+                <tbody id="hu05-po-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- VIEW HU-06: POS, LIQUIDACIÓN CON CÁLCULO FISCAL INTERNO Y PAGOS  -->
+        <!-- ================================================================ -->
+        <section id="view-hu06" class="view-section">
+          <div class="hu-criteria-banner">
+            <div class="hu-criteria-banner-left hu-banner-text">
+              <h3>HU-06: Punto de Venta (POS), Liquidación con Cálculo Fiscal Interno y Registro de Pagos en Mostrador</h3>
+              <p>Liquidación integrada de órdenes de servicio técnico y ventas de mostrador, discriminando mano de obra, repuestos e IVA interno (19%), y registrando pagos internos en tienda sin pasarela B2C pública.</p>
+            </div>
+            <div class="hu-banner-pills">
+              <span class="ca-pill">✓ CA-06.1 Cálculo Fiscal Interno (IVA 19%)</span>
+              <span class="ca-pill">✓ CA-06.2 Registro de Pagos Internos</span>
+              <span class="ca-pill">✓ CA-06.3 Comprobante y Exportación JSON/XML</span>
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">💳 Terminal de Liquidación POS y Registro de Recaudo Interno (CA-06.1, CA-06.2)</div>
+                <span class="badge badge-success">Caja Mostrador Activa</span>
+              </div>
+              <div class="card-body">
+                <form onsubmit="registerInternalPayment(event)">
+                  <div class="form-group">
+                    <label class="form-label">Orden de Servicio Técnico Lista para Liquidar</label>
+                    <select class="form-control" onchange="state.selectedPosOstId=this.value;renderHU06();">
+                      <option value="OST-2026-0101">OST-2026-0101 — Mauricio Restrepo (Trek Marlin 7 • Lista para Entrega)</option>
+                      <option value="OST-2026-0102">OST-2026-0102 — Diana Carolina Pineda (Specialized Allez E5)</option>
+                      <option value="OST-2026-0103">OST-2026-0103 — Camilo Andrés Mora (Giant Talon 1)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label class="form-label">Descuento Comercial Autorizado (%)</label>
+                      <input type="number" id="pos-discount-pct" class="form-control" value="5" min="0" max="30" oninput="renderHU06()">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Tarifa de Impuesto Interno Aplicada</label>
+                      <input type="text" class="form-control" value="IVA Estándar 19% (Cálculo Interno)" readonly style="background:#eff6ff;color:#1e3a8a;font-weight:700;">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Medio de Pago Recibido en Mostrador (Registro Interno de Caja)</label>
+                    <select id="pos-payment-method" class="form-control">
+                      <option value="Transferencia Interna (Nequi / Daviplata / QR Bancolombia)">Transferencia Interna (Nequi / Daviplata / QR Bancolombia)</option>
+                      <option value="Efectivo en Caja Principal">Efectivo en Caja Principal</option>
+                      <option value="Datáfono Físico Redeban (Tarjeta Débito / Crédito)">Datáfono Físico Redeban (Tarjeta Débito / Crédito)</option>
+                    </select>
+                  </div>
+
+                  <div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:11.5px;color:#334155;">
+                    <strong>📌 Claridad de Alcance Fiscal y de Pagos (Fase 1):</strong><br>
+                    1. <strong>Operaciones Fiscales:</strong> La plataforma calcula internamente la base gravable, descuentos e IVA (19%) para el comprobante de entrega y exporta la estructura en <code>JSON/XML</code> hacia el software contable. La firma digital y transmisión directa a la API de la DIAN están excluidas de la Fase 1.<br>
+                    2. <strong>Registro de Pagos:</strong> El módulo registra el pago recibido en mostrador (efectivo, transferencia o datáfono físico) para conciliación de caja. No incluye pasarela de pago e-commerce B2C pública.
+                  </div>
+
+                  <div style="display:flex;gap:8px;">
+                    <button type="submit" class="btn btn-primary" style="flex:1;">✅ Confirmar Pago y Entregar Bicicleta</button>
+                    <button type="button" class="btn btn-outline" onclick="showToast('Estructura JSON/XML contable exportada correctamente.')">📤 Exportar JSON/XML</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">🧾 Vista Previa del Comprobante Interno de Servicio y Venta (CA-06.3)</div>
+                <span class="badge badge-warning">Pre-Factura / Recibo POS</span>
+              </div>
+              <div class="card-body">
+                <div id="hu06-receipt-preview" class="pos-receipt"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">💰 Historial de Pagos Internos Registrados y Conciliación de Caja</div>
+              <span class="badge badge-success">Cuadre de Caja al Día</span>
+            </div>
+            <div class="card-body table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Recibo POS / Fecha</th>
+                    <th>Orden Asociada y Cliente</th>
+                    <th>Subtotal Repuestos</th>
+                    <th>Subtotal Mano Obra</th>
+                    <th>IVA Interno (19%)</th>
+                    <th>Total Recaudado</th>
+                    <th>Medio de Pago Registrado</th>
+                  </tr>
+                </thead>
+                <tbody id="hu06-pos-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================ -->
+        <!-- VIEW HU-07: TABLERO ANALÍTICO Y REPORTES OPERATIVOS              -->
+        <!-- ================================================================ -->
+        <section id="view-hu07" class="view-section">
+          <div class="hu-criteria-banner">
+            <div class="hu-banner-text">
+              <h3>HU-07: Tablero Analítico de Gestión y Exportación de Reportes Operativos (PDF / CSV)</h3>
+              <p>Visualización ejecutiva en tiempo real de ingresos por mano de obra técnica frente a repuestos, productividad de mecánicos, rotación de inventario y generación de reportes descargables.</p>
+            </div>
+            <div class="hu-banner-pills">
+              <span class="ca-pill">✓ CA-07.1 KPIs Financieros y de Taller</span>
+              <span class="ca-pill">✓ CA-07.2 Métricas por Mecánico y Servicio</span>
+              <span class="ca-pill">✓ CA-07.3 Exportación PDF y CSV</span>
+            </div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Ingresos Acumulados (Mes)</span><span class="kpi-icon" style="background:#ecfdf5;color:#059669;">💵</span></div>
+              <div class="kpi-value">$8.420.000</div>
+              <div class="kpi-sub">62% Repuestos • 38% Mano de Obra Técnica</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Bicicletas Atendidas (Mes)</span><span class="kpi-icon" style="background:#eff6ff;color:#2563eb;">🚲</span></div>
+              <div class="kpi-value">48 Órdenes OST</div>
+              <div class="kpi-sub">Tiempo prom. entrega: 18.4 horas</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Valor Inventario Valorizado</span><span class="kpi-icon" style="background:#f5f3ff;color:#7c3aed;">📦</span></div>
+              <div class="kpi-value" id="hu07-inv-val">$3.845.000</div>
+              <div class="kpi-sub">Cálculo por Costo Promedio Ponderado</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Alertas de Reabastecimiento</span><span class="kpi-icon" style="background:#fff1f2;color:#e11d48;">⚠️</span></div>
+              <div class="kpi-value" id="hu07-crit-count">4 SKUs en alerta</div>
+              <div class="kpi-sub">Reducción de quiebres de stock: 92%</div>
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">📈 Distribución de Ingresos por Tipo de Servicio Técnico (CA-07.1, CA-07.2)</div>
+                <span class="badge badge-info">Análisis Operativo</span>
+              </div>
+              <div class="card-body">
+                <div class="bar-row">
+                  <div class="bar-label-row"><span>Mantenimiento General Completo (MTB / Ruta)</span><span>42% ($3.536.400)</span></div>
+                  <div class="bar-track"><div class="bar-fill" style="width:42%;background:#2563eb;"></div></div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-label-row"><span>Cambio de Transmisión (Pachas, Cadenas, Centros)</span><span>28% ($2.357.600)</span></div>
+                  <div class="bar-track"><div class="bar-fill" style="width:28%;background:#059669;"></div></div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-label-row"><span>Frenos Hidráulicos (Purgado, Pastillas y Discos)</span><span>18% ($1.515.600)</span></div>
+                  <div class="bar-track"><div class="bar-fill" style="width:18%;background:#d97706;"></div></div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-label-row"><span>Mantenimiento de Suspensiones y Conversión Tubeless</span><span>12% ($1.010.400)</span></div>
+                  <div class="bar-track"><div class="bar-fill" style="width:12%;background:#7c3aed;"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">👨‍🔧 Productividad por Técnico Mecánico y Exportación de Reportes (CA-07.2, CA-07.3)</div>
+                <div style="display:flex;gap:6px;">
+                  <button class="btn btn-outline btn-sm" onclick="showToast('Reporte CSV exportado exitosamente.')">📥 Exportar CSV</button>
+                  <button class="btn btn-primary btn-sm" onclick="showToast('Reporte Ejecutivo PDF generado.')">📄 Exportar PDF</button>
+                </div>
+              </div>
+              <div class="card-body">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Técnico Mecánico</th>
+                      <th>OST Completadas</th>
+                      <th>Tiempo Promedio</th>
+                      <th>Calificación Cliente</th>
+                      <th>Ingresos Mano Obra</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Carlos Andrés Mejía (Líder)</strong></td>
+                      <td>27 bicicletas</td>
+                      <td>16.5 h</td>
+                      <td><span class="badge badge-success">★ 4.9 / 5.0</span></td>
+                      <td><strong>$1.840.000</strong></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Diego Fernando Soto</strong></td>
+                      <td>21 bicicletas</td>
+                      <td>20.2 h</td>
+                      <td><span class="badge badge-success">★ 4.8 / 5.0</span></td>
+                      <td><strong>$1.360.000</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div style="margin-top:12px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;padding:10px 12px;font-size:11.5px;color:#065f46;">
+                  <strong>✓ Evaluación SUS de Usabilidad: 88.5 / 100</strong> • <strong>✓ Cobertura Pruebas Unitarias: 86.4% (&gt;80%)</strong> • <strong>✓ Latencia p95 bajo 50 usuarios concurrentes: 38 ms (&lt;400 ms)</strong>.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="app-toast" class="toast-box">
+    <span>✅</span>
+    <span id="app-toast-text">Operación completada</span>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
